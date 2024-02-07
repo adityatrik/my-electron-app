@@ -1,20 +1,318 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
-    <meta
-      http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
-    <title>Hello from Electron renderer!</title>
-  </head>
-  <body>
-    <h1>Hello from Electron renderer!</h1>
-    <p>👋</p>
-  </body>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAVIS BATTERY CHARGING AND BALANCING TEST</title>
+    <!-- Tambahkan link ke file CSS Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            -webkit-print-color-adjust: exact !important;
+            /* Chrome, Safari 6 – 15.3, Edge */
+            color-adjust: exact !important;
+            /* Firefox 48 – 96 */
+            print-color-adjust: exact !important;
+            /* Firefox 97+, Safari 15.4+ */
+        }
+
+        @font-face {
+            font-family: 'Sony Sketch';
+            src: url('assets/font/Sony_Sketch_EF/Sony_Sketch_EF.ttf');
+        }
+
+        @font-face {
+            font-family: 'Bookman Old Style';
+            src: url('assets/font/Bookman_Old_Style_Regular/Bookman\ Old\ Style\ Regular.ttf');
+        }
+
+        .font-sony {
+            font-family: 'Sony Sketch';
+        }
+
+        .font-bookman {
+            font-family: 'Bookman Old Style';
+        }
+
+        .black-border-box {
+            width: 200px;
+            height: 20px;
+            border: 1px solid white;
+            padding-top: 20px;
+            padding-bottom: 40px;
+            margin-left: 15px;
+            margin-right: auto;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        #tabelPengujian {
+            height: 50pt;
+        }
+    </style>
+</head>
+
+<body style="height: auto;">
+    <div class="container font-bookman" style="font-size: 10pt;">
+        <div class="col-md-2">
+            <img src="assets/logo/logo_javis.png" style="width: 50pt;" alt="logo" class="img-responsive">
+        </div>
+        <div class="col-md-10">
+            <div style="font-size: 20pt;">
+                <b class="font-sony">
+                    Laporan Pengujian Charging dan Balancing
+                </b>
+                <br>
+                <b class="font-sony">
+                    Javis Lithium Battery
+                </b>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <hr>
+            </div>
+        </div>
+        <div class="font-bookman">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <b>Waktu Pengujian : </b><a id="waktuPengujian"></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-left" style="margin-left: 10pt; font-size: 13pt;">
+                    <b>IDENTITAS PRODUK</b>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-left" style="margin-left:10pt">
+                    <table>
+                        <tr>
+                            <th>Model Produk</th>
+                            <td>&ensp;:&ensp;</td>
+                            <td>JB-120.8C.1B-L</td>
+                        </tr>
+                        <tr>
+                            <th>Varian</th>
+                            <td>&ensp;:&ensp;</td>
+                            <td>Lithium Iron (LiFePO4)</td>
+                        </tr>
+                        <tr>
+                            <th>Versi</th>
+                            <td>&ensp;:&ensp;</td>
+                            <td>1.0</td>
+                        </tr>
+                        <tr>
+                            <th>Tegangan</th>
+                            <td>&ensp;:&ensp;</td>
+                            <td>25.6V</td>
+                        </tr>
+                        <tr>
+                            <th>Tegangan Pengisian</th>
+                            <td>&ensp;:&ensp;</td>
+                            <td>29.2V</td>
+                        </tr>
+                        <tr>
+                            <th>Kapasitas</th>
+                            <td>&ensp;:&ensp;</td>
+                            <td>120Ah</td>
+                        </tr>
+                        <tr>
+                            <th>Jumlah Cell</th>
+                            <td>&ensp;:&ensp;</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <th>Tipe Cell</th>
+                            <td>&ensp;:&ensp;</td>
+                            <td>HLJFP481713170E</td>
+                        </tr>
+                        <tr>
+                            <th>COM Port</th>
+                            <td>&ensp;:&ensp;</td>
+                            <td>
+                                <div>
+                                    <select id="comPortDropdown"></select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Status Komunikasi</th>
+                            <td>&ensp;:&ensp;</td>
+                            <td id="statusKomunikasi"></td>
+                        </tr>
+                        <tr>
+                            <th>Status Baterai</th>
+                            <td>&ensp;:&ensp;</td>
+                            <td id="statusBaterai"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-left" style="margin-left: 10pt; font-size: 13pt; margin-top: 12pt;">
+                    <b>PENGUJIAN</b>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-left" style="margin-left:-8pt">
+                    <table class="table table-bordered ml-4 table-sm" style="height: 5px;">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center">NO</th>
+                                <th scope="col" class="text-center">NAMA PENGUJIAN</th>
+                                <th scope="col" class="text-center">STANDAR KELULUSAN</th>
+                                <th scope="col" class="text-center">HASIL PENGUJIAN</th>
+                                <th scope="col" class="text-center">KETERANGAN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center">1.</td>
+                                <td>Tegangan Baterai</td>
+                                <td class="text-center">V > 26.5VDC</td>
+                                <td class="text-center" id="valueTegBaterai"></td>
+                                <td class="text-center" id="statusTegBaterai"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">2.</td>
+                                <td>Kapasitas Baterai</td>
+                                <td class="text-center">Kapasitas = 120Ah</td>
+                                <td class="text-center" id="valueKapBaterai"></td>
+                                <td class="text-center" id="statusKapBaterai"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">3.</td>
+                                <td>Tegangan Cell Baterai 1</td>
+                                <td class="text-center">V ≥ 3.3 V</td>
+                                <td class="text-center" id="valueC1"></td>
+                                <td class="text-center" id="statusC1"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">4.</td>
+                                <td>Tegangan Cell Baterai 2</td>
+                                <td class="text-center">V ≥ 3.3 V</td>
+                                <td class="text-center" id="valueC2"></td>
+                                <td class="text-center" id="statusC2"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">5.</td>
+                                <td>Tegangan Cell Baterai 3</td>
+                                <td class="text-center">V ≥ 3.3 V</td>
+                                <td class="text-center" id="valueC3"></td>
+                                <td class="text-center" id="statusC3"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">6.</td>
+                                <td>Tegangan Cell Baterai 4</td>
+                                <td class="text-center">V ≥ 3.3 V</td>
+                                <td class="text-center" id="valueC4"></td>
+                                <td class="text-center" id="statusC4"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">7.</td>
+                                <td>Tegangan Cell Baterai 5</td>
+                                <td class="text-center">V ≥ 3.3 V</td>
+                                <td class="text-center" id="valueC5"></td>
+                                <td class="text-center" id="statusC5"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">8.</td>
+                                <td>Tegangan Cell Baterai 6</td>
+                                <td class="text-center">V ≥ 3.3 V</td>
+                                <td class="text-center" id="valueC6"></td>
+                                <td class="text-center" id="statusC6"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">9.</td>
+                                <td>Tegangan Cell Baterai 7</td>
+                                <td class="text-center">V ≥ 3.3 V</td>
+                                <td class="text-center" id="valueC7"></td>
+                                <td class="text-center" id="statusC7">
+                                    </td7 </tr>
+                            <tr>
+                                <td class="text-center">10.</td>
+                                <td>Tegangan Cell Baterai 8</td>
+                                <td class="text-center">V ≥ 3.3 V</td>
+                                <td class="text-center" id="valueC8"></td>
+                                <td class="text-center" id="statusC8"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">11.</td>
+                                <td>Rata Rata Tegangan Cell Baterai</td>
+                                <td class="text-center">V ≥ 3.3 V</td>
+                                <td class="text-center" id="valueAverage"></td>
+                                <td class="text-center" id="statusAverage"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">12.</td>
+                                <td>Selisih Tegangan Cell Baterai Tertinggi dan Terendah</td>
+                                <td class="text-center">V < 0.200 V</td>
+                                <td class="text-center" id="valueSelisih"></td>
+                                <td class="text-center" id="statusSelisih"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-left" style="margin-left: 10pt; font-size: 13pt; margin-top: 12pt;">
+                    <b>HASIL PENGUJIAN</b>
+                </div>
+                <div style="margin-left: 22pt;">
+                    <p>*Hasil Pengujian dinyatakan lulus, jika hasil seluruh tahapan pengujian lulus uji.</p>
+                </div>
+            </div>
+
+            <div class="black-border-box" id="bgHasilPengujian">
+                <b style="color: white;" id="hasilPengujian"></b>
+            </div>
+
+            <h6 style="text-align: center; margin-top: -60px; margin-bottom: 100px; margin-left: -100px;"
+                id="serialNumber">
+            </h6>
+
+
+            <div class="row ml-1 mr-1 mb-3 mt-3">
+                <div class="col-md-2 border border-white text-center ">
+
+                </div>
+                <div class="col-md-8 border border-white ">
+
+                </div>
+                <div class="col-md-2 border border-white p-2">
+                    <h6 class="text-right" style="margin-right: 15pt;">
+                        Petugas QC
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                    </h6>
+                    <p class="text-right">(.....................................)</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <br><br>
+                    &copy; 2024 PT. Javis Teknologi Albarokah
+                    <hr>
+                </div>
+            </div>
+            <div class="text-center mb-5">
+                <button class="btn btn-primary btn-block" onclick="printTables()">Print</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tambahkan link ke file JavaScript Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+
+</body>
+
 </html>

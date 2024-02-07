@@ -10,6 +10,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^28.2.1"
+    "electron": "^28.2.1",
+    "electron-builder": "^24.9.1",
+    "serialport": "^10.5.0",
+    "electron-packager": "^17.1.2"
   }
 }
